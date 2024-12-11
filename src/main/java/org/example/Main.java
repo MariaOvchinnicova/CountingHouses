@@ -17,7 +17,7 @@ public class Main {
         String input;
 
         System.out.println("Введите путь к файлу или 'exit' для завершения:");
-
+        long interval = 0;
         while (!(input = scanner.nextLine()).equalsIgnoreCase("exit")) {
             File file = new File(input);
             if (!file.exists()) {
@@ -39,11 +39,10 @@ public class Main {
             }
             long endTime = System.currentTimeMillis();
 
-            System.out.println("Время обработки: " + (endTime - startTime) + " мс");
+            interval += endTime - startTime;
             System.out.println("Введите путь к файлу или 'exit' для завершения:");
         }
-
-
+        System.out.println("Время обработки: " + interval + " мс");
     }
 
     private static List<City> parseXml(File file) throws Exception {
@@ -87,18 +86,21 @@ public class Main {
         }
 
         System.out.println("Дублирующиеся записи:");
-        duplicates.entrySet().stream()
-                .filter(entry -> entry.getValue() > 1)
-                .forEach(entry -> System.out.println(entry.getKey() + ": " + entry.getValue() + " раз"));
+        for (Map.Entry<String, Integer> entry : duplicates.entrySet()) {
+            if (entry.getValue() > 1) {
+                System.out.println(entry.getKey() + ": " + entry.getValue() + " раз");
+            }
+        }
 
         System.out.println("Этажность зданий по городам:");
-        buildingCounts.forEach((city, counts) -> {
-            System.out.print(city + ": ");
-            for (int i = 0; i < counts.length; i++) {
-                System.out.print((i + 1) + "-этажные = " + counts[i] + " ");
+        for (Map.Entry<String, int[]> entry : buildingCounts.entrySet()) {
+            System.out.print(entry.getKey() + ": ");
+            for (int i = 0; i < entry.getValue().length; i++) {
+                System.out.print((i + 1) + "-этажные = " + entry.getValue()[i] + " ");
             }
             System.out.println();
-        });
+
+        }
     }
 
 
